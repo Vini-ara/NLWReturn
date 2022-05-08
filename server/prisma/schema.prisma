@@ -13,9 +13,21 @@ datasource db {
 model Feedback {
   id String @id @default(uuid())
 
-  type       String 
-  comment    String 
-  Screenshot String? 
+  type       String
+  comment    String
+  screenshot String?
 
   @@map("feedbacks")
+}
+
+model User {
+  id String @id @default(uuid())
+
+  name      String
+  email     String   @unique
+  role      String   @default("user")
+  password  String
+  createdAt DateTime @default(now())
+
+  @@map("users")
 }

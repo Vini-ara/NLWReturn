@@ -1,28 +1,24 @@
 import express from 'express';
-// import nodemailer from 'nodemailer';
 
-import { PrismaFeedbacksRepository } from './repositories/prisma/prisma-feedbacks-repository';
-import { NodemailerMailAdapter } from './adapters/nodemailer/nodemailer-mail-adapter';
-import { SubmitFeedbackUseCase } from './use-cases/submit-feedback-use-case';
+import { SubmitFeedbackController } from './controllers/submitFeedbackController';
+import { GetAllFedabcksController } from './controllers/getAllFeedbacksController';
+import { SubmitUserController } from './controllers/submitUserController';
+import { UserLoginController } from './controllers/userLoginController';
 
-
+import { ensureAuthenticated } from './middlewares/ensureAuthenticated';
+import { ensureAdmin } from './middlewares/ensureAdmin';
 
 export const routes = express.Router();
 
-routes.post('/feedbacks', async (req, res) => {
+const submitFeedbackController = new SubmitFeedbackController();
+const getAllFeedbacksController = new GetAllFedabcksController();
+const submitUserController = new SubmitUserController();
+const userLoginController = new UserLoginController();
 
-  const { type, comment, screenshot } = req.body;
+routes.post('/feedbacks', submitFeedbackController.handle);
 
-  const prismaFeedbacksRepository = new PrismaFeedbacksRepository();
-  const nodemailerMailAdapter = new NodemailerMailAdapter();
+routes.get('/feedbacks', ensureAuthenticated, ensureAdmin, getAllFeedbacksController.handle);
 
-  const submit = new SubmitFeedbackUseCase(prismaFeedbacksRepository, nodemailerMailAdapter)
+routes.post('/users', submitUserController.handle);
 
-  await submit.execute({
-    type,
-    comment,
-    screenshot
-  })
-
-  return res.status(201).send();
-})
+routes.post('/login', userLoginController.handle);

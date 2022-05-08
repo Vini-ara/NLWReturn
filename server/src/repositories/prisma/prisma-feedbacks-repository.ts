@@ -3,13 +3,18 @@ import { prisma } from '../../prisma';
 
 export class PrismaFeedbacksRepository implements FeedbacksRepository {
   async create({type, comment, screenshot}: FeedbackCreateData) {
-
     await prisma.feedback.create({
       data: {
         type, 
         comment,
-        Screenshot: screenshot 
+        screenshot
       }
     })
+  }
+
+  async getAllFeedbacks() {
+    const feedbacks: FeedbackCreateData[] = await prisma.feedback.findMany();
+
+    return feedbacks;
   }
 }
