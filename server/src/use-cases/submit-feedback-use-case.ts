@@ -15,8 +15,7 @@ export class SubmitFeedbackUseCase {
     private mailAdapter: MailAdapter,
   ) {}
 
-  async execute(res: Response, request: SubmitFeedbackUseCaseRequest) {
-    try {
+  async execute(request: SubmitFeedbackUseCaseRequest) {
     const { type, comment, screenshot } = request;
 
     if(!type) throw new CustomError('Type is required', 400);
@@ -41,10 +40,5 @@ export class SubmitFeedbackUseCase {
         `</div>`
       ].join('\n')
     })
-    } catch(err) {
-      console.log(err) 
-
-      return res.status(500).send(err)
-    }
   }
 }
