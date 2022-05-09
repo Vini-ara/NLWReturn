@@ -8,6 +8,8 @@ import { PrismaFeedbacksRepository } from '../repositories/prisma/prisma-feedbac
 
 export class SubmitFeedbackController {
   async handle(req: Request, res: Response) {
+    try {
+
     const { type, comment, screenshot } = req.body;
 
     const prismaFeedbacksRepository = new PrismaFeedbacksRepository();
@@ -23,5 +25,10 @@ export class SubmitFeedbackController {
     })
 
     return res.status(201).send();
+    } catch (err) {
+      console.log(err) 
+
+      return res.status(500).send(err);
+    }
   }
 }
