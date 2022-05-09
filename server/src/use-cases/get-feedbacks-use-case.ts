@@ -6,6 +6,7 @@ interface GetAllFeedbakcsUseCaseResponse {
   screenshot?: string | null;
 }
 
+
 export class GetAllFedabcksUseCase {
   constructor (
     private feedbackRepository:  FeedbacksRepository,
