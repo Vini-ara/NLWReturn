@@ -1,3 +1,4 @@
+import { Response } from 'express';
 import { FeedbacksRepository } from '../repositories/feedbacks-repository';
 import { MailAdapter } from '../adapters/mail-adapter';
 import { CustomError } from '../models/custom-error-model';
@@ -14,7 +15,8 @@ export class SubmitFeedbackUseCase {
     private mailAdapter: MailAdapter,
   ) {}
 
-  async execute(request: SubmitFeedbackUseCaseRequest) {
+  async execute(res: Response, request: SubmitFeedbackUseCaseRequest) {
+    try {
     const { type, comment, screenshot } = request;
 
     if(!type) throw new CustomError('Type is required', 400);
@@ -39,5 +41,10 @@ export class SubmitFeedbackUseCase {
         `</div>`
       ].join('\n')
     })
+    } catch(err) {
+      console.log(err) 
+
+      return res.status(500).send(err)
+    }
   }
 }
