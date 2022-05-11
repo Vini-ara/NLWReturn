@@ -1,8 +1,6 @@
 import { UsersRepository } from '../repositories/users-repository'
 import { hash } from 'bcryptjs';
 
-import { CustomError } from '../models/custom-error-model';
-
 interface SubmitUserUseCaseRequest {
   name: string;
   email: string;
@@ -23,7 +21,7 @@ export class SubmitUserUseCase {
     const userExists = await this.UsersRepository.getUserByEmail(email);
 
     if(userExists) {
-      throw new CustomError("Email already registered!", 409);
+      throw new Error("Email already signed to a account");
     }
     
     await this.UsersRepository.create({

@@ -2,8 +2,6 @@ import { UsersRepository } from '../repositories/users-repository';
 import { sign } from 'jsonwebtoken';
 import { compare } from 'bcryptjs';
 
-import { CustomError } from '../models/custom-error-model';
-
 interface UserLoginUseCaseRequest {
   email: string;
   password: string;
@@ -19,11 +17,11 @@ export class UserLoginUseCase {
 
     const user = await this.UserRepository.getUserByEmail(email);
 
-    if(!user) throw new CustomError("User or Password invalid", 404);
+    if(!user) throw new Error("User or password invalid");
 
     const validPassword = await compare(password, user.password);
 
-    if(!validPassword) throw new CustomError("User or password invalid", 404);
+    if(!validPassword) throw new Error("User or password invalid");
 
     const token = sign({
       email: user.email,
@@ -31,6 +29,13 @@ export class UserLoginUseCase {
       expiresIn: '1d'
     });
 
-    return token;
+    return {
+      token,
+      user: {
+        name: user.name,
+        email: user.email,
+        role: user.role
+      }
+    };
   }
 }

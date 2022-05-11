@@ -10,8 +10,14 @@ export class SubmitUserController {
 
     const submit = new SubmitUserUseCase(prismaUsersRepository);
 
-    await submit.execute(req.body);
+    try {
+      await submit.execute(req.body);
 
-    return res.status(201).send();
+      return res.status(201).send();
+    } catch(err: any) {
+      return res.status(400).json({
+        error: err.message
+      })
+    }
   }
 }

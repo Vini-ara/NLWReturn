@@ -10,8 +10,14 @@ export class UserLoginController {
 
     const authenticate = new UserLoginUseCase(prismaUsersRepository);
 
-    const token = await authenticate.execute(req.body);
-
-    return res.status(200).json(token)
+    try {
+      const data = await authenticate.execute(req.body);
+      
+      return res.status(200).json(data)
+    } catch(err: any) {
+      return res.status(400).json({
+        error: err.message
+      })
+    }
   }
 }

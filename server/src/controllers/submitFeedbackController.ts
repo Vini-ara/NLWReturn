@@ -8,27 +8,26 @@ import { PrismaFeedbacksRepository } from '../repositories/prisma/prisma-feedbac
 
 export class SubmitFeedbackController {
   async handle(req: Request, res: Response) {
-    try {
-
     const { type, comment, screenshot } = req.body;
 
-    const prismaFeedbacksRepository = new PrismaFeedbacksRepository();
+    const prismafeedbacksrepository = new PrismaFeedbacksRepository();
 
-    const nodemailerMailAdapter = new NodemailerMailAdapter();
+    const nodemailermailadapter = new NodemailerMailAdapter();
 
-    const submit = new SubmitFeedbackUseCase(prismaFeedbacksRepository, nodemailerMailAdapter)
+    const submit = new SubmitFeedbackUseCase(prismafeedbacksrepository, nodemailermailadapter)
 
-    await submit.execute({
-      type,
-      comment,
-      screenshot
-    })
+    try {
+      await submit.execute({
+        type,
+        comment,
+        screenshot
+      })
 
-    return res.status(201).send();
-    } catch (err) {
-      console.log(err) 
-
-      return res.status(500).send(err);
+      return res.status(201).send();
+    } catch (err: any) {
+      return res.status(400).json({
+        error: err.message
+      })
     }
   }
 }

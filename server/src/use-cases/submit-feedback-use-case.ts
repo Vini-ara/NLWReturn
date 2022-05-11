@@ -1,7 +1,5 @@
-import { Response } from 'express';
 import { FeedbacksRepository } from '../repositories/feedbacks-repository';
 import { MailAdapter } from '../adapters/mail-adapter';
-import { CustomError } from '../models/custom-error-model';
 
 interface SubmitFeedbackUseCaseRequest {
   type: string;
@@ -18,11 +16,11 @@ export class SubmitFeedbackUseCase {
   async execute(request: SubmitFeedbackUseCaseRequest) {
     const { type, comment, screenshot } = request;
 
-    if(!type) throw new CustomError('Type is required', 400);
+    if(!type) throw new Error('Type is required');
     
-    if(!comment) throw new CustomError('Comment is required', 400);
+    if(!comment) throw new Error('Comment is required');
 
-    if(screenshot && !screenshot.startsWith('data:image/png;base64')) throw new CustomError('Invalid screenshot format', 400);
+    if(screenshot && !screenshot.startsWith('data:image/png;base64')) throw new Error('Invalid screenshot format');
 
     await this.feedbackRepository.create({
       type,
