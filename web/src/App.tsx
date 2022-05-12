@@ -27,20 +27,21 @@ export function App() {
   }
 
   async function createUser(email: string, password: string, name?: string) {
-    await api.post('/users', {
+    const info = await api.post('/users', {
       name,
       email, 
       password
     })
+
+    localStorage.setItem('token', info.data.token)
+    setUser(info.data.user)
   }
 
   return (
     <> 
       <Header changeIsLogin={setIsLogin} user={user} clearUser={setUser}/>
-      { user?.role !== "admin" ? 
-        <LoginForm isLogin={isLogin} submitLogin={loginUser} createUser={createUser}/> : 
-        <FeedbacksListing /> 
-      }
+      { user?.name === undefined && <LoginForm isLogin={isLogin} submitLogin={loginUser} createUser={createUser}/>}
+      { user?.role === "admin" && <FeedbacksListing /> }
       <Widget />
     </>
   );

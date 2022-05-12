@@ -1,4 +1,5 @@
 import { FormEvent, useEffect, useState } from "react";
+import { Loading } from './Loading'
 
 interface LoginFormProps {
   isLogin: boolean;
@@ -11,6 +12,7 @@ export function LoginForm({ isLogin, submitLogin, createUser }: LoginFormProps) 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     setName("");
@@ -19,6 +21,8 @@ export function LoginForm({ isLogin, submitLogin, createUser }: LoginFormProps) 
   }, [isLogin])
 
   async function handleSubmit(event: FormEvent, func: (email: string, password: string, name?: string) => Promise<void>) {
+    setIsLoading(true);
+
     event.preventDefault();
 
     try {
@@ -35,10 +39,13 @@ export function LoginForm({ isLogin, submitLogin, createUser }: LoginFormProps) 
     setName('');
     setEmail('');
     setPassword('');
+
+    setIsLoading(false);
   }
 
   return (
     <form onSubmit={(e) => {isLogin ? handleSubmit(e, submitLogin) : handleSubmit(e, createUser)}} className="bg-zinc-800 px-8 py-10 relative mt-[15vh] max-w-xl rounded-lg mx-auto flex flex-col items-center justify-center">
+      {errorMsg.length !== 0 && <p className="w-full bg-red-500 font-bold px-4 py-2 rounded-md border-red-800 mb-4">{errorMsg}</p>}
       <h2 className="text-xl font-bold text-center">{isLogin ? "Entrar" : "Cadastrar-se"}</h2>
 
       {!isLogin ? (
@@ -91,9 +98,10 @@ export function LoginForm({ isLogin, submitLogin, createUser }: LoginFormProps) 
 
       <button 
         type="submit" 
-        className="mt-8 p-3 text-md font-bold bg-brand-500 w-full rounded-md hover:bg-brand-300"
+        disabled={isLoading}
+        className="mt-8 p-3 text-md font-bold bg-brand-500 w-full rounded-md hover:bg-brand-300 disabled:brightness-50 flex justify-center items-center"
       > 
-        Conecte-se
+        {!isLoading ? "Conecte-se" : <Loading />}
       </button>
     </form>
   );
