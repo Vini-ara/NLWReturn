@@ -15,7 +15,6 @@ export function App() {
   const [isLogin, setIsLogin] = useState(true);
   const [user, setUser] = useState<User | null>(null);
 
-
   async function loginUser(email: string, password: string, name?: string) {
     const info = await api.post('/login', {
       email, 
@@ -24,7 +23,6 @@ export function App() {
 
     localStorage.setItem('token', info.data.token)
     setUser(info.data.user)
-    console.log(info.data.user);
   }
 
   async function createUser(email: string, password: string, name?: string) {
